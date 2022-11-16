@@ -3,7 +3,7 @@ import './Form.css';
 import {useTelegram} from "../../hooks/useTelegram";
 
 const Form = () => {
-    const [city, setCity] = useState('')
+    const [city, setCity] = useState('');
     const [street, setStreet] = useState('');
     const [subject, setSubject] = useState('physical');
     const {tg} = useTelegram();
@@ -15,41 +15,43 @@ const Form = () => {
             subject
         }
         tg.sendData(JSON.stringify(data));
-    }, [])
+    }, [city, street, subject])
 
     useEffect(() => {
-        tg.onEvent('backButtonClicked', onSendData)
+        tg.onEvent('mainButtonClicked', onSendData)
         return () => {
-            tg.offEvent()('backButtonClicked', onSendData)
+            tg.offEvent('mainButtonClicked', onSendData)
         }
-    }, [])
+    }, [onSendData])
 
     useEffect(() => {
         tg.MainButton.setParams({
-            text: 'Send data'
+            text: 'Отправить данные'
         })
     }, [])
 
     useEffect(() => {
-        if(!city || !street) {
+        if(!street || !city) {
             tg.MainButton.hide();
         } else {
             tg.MainButton.show();
         }
     }, [city, street])
 
-    const onChangeCity =(e) => {
+    const onChangeCity = (e) => {
         setCity(e.target.value)
     }
-    const onChangeStreet =(e) => {
+
+    const onChangeStreet = (e) => {
         setStreet(e.target.value)
     }
-    const onChangeSubject =(e) => {
+
+    const onChangeSubject = (e) => {
         setSubject(e.target.value)
     }
 
     return (
-        <div className={'form'}>
+        <div className={"form"}>
             <h3>Введите ваши данные</h3>
             <input
                 className={'input'}
